@@ -16,10 +16,12 @@ app.get('/', function(req, res) {
     res.json('Hello World')
 });
 
-mongoose.connect('mongodb://localhost:27017/cafe', (err) => {
-    if (err) throw err;
-    console.log('Base de datos UP');
-});
+mongoose.connect(process.env.URL_DATABASE, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true },
+    (err) => {
+
+        if (err) throw err;
+        console.log('Base de datos UP');
+    });
 
 app.listen(process.env.PORT, () => {
     console.log("Escuchando en: ", process.env.PORT);
