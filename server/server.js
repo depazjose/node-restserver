@@ -9,7 +9,8 @@ const bodyParser = require('body-parser');
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(require('./routes/usuario.js'));
+//configuración global de rutas
+app.use(require('./routes/index.js'));
 
 app.get('/', function(req, res) {
     //res.send('Hello World')
