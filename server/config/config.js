@@ -15,6 +15,11 @@ process.env.NODE_ENV = process.env.NODE_ENV || "dev";
 process.env.JWT_CADUCIDAD = 60 * 60 * 24 * 15;
 process.env.JWT_SEED = process.env.JWT_SEED || 'my-jwt-token'
 
+// ===============================
+//  Google Auth
+// ===============================
+
+process.env.GOOGLE_ID = process.env.GOOGLE_ID || '164913549780-hnj8e59reqcksuuojjlrqhs30kglh6v2.apps.googleusercontent.com'
 
 // ===============================
 //  Base de datos
