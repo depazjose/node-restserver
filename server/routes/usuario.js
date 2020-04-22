@@ -6,7 +6,7 @@ const app = express();
 
 const { verificaToken, verificaAdminRole } = require('../middlewares/autenticacion.js')
 
-app.get('/usuario', verificaToken, function(req, res) {
+app.get('/usuario', function(req, res) {
 
     let desde = req.query.desde || 0;
     let limite = req.query.limite || 2;
@@ -17,7 +17,7 @@ app.get('/usuario', verificaToken, function(req, res) {
     Usuario.find({ estado: true }, 'nombre email estado role google img')
         .skip(desde)
         .limit(limite)
-        .exec((err, usuarios) => {
+        .exec((err, users) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
@@ -28,9 +28,8 @@ app.get('/usuario', verificaToken, function(req, res) {
             Usuario.countDocuments({ estado: true }, (err, conteo) => {
 
                 res.json({
-                    ok: true,
-                    usuarios,
-                    cuantos: conteo
+                    users,
+                    elements: conteo
                 });
 
             });
@@ -40,7 +39,7 @@ app.get('/usuario', verificaToken, function(req, res) {
 
 });
 
-app.post('/usuario', [verificaToken, verificaAdminRole], function(req, res) {
+app.post('/usuario', function(req, res) {
 
     let body = req.body;
 
@@ -63,28 +62,10 @@ app.post('/usuario', [verificaToken, verificaAdminRole], function(req, res) {
             ok: true,
             usuario: usuarioDB
         });
-
-
     });
-
-
-    /*
-        if (body.nombre === undefined) {
-            res.status(400).json({
-                ok: false,
-                mensaje: 'El nombre es necesario'
-            });
-        } else {
-            res.json({
-                persona: body
-            });
-        }
-    */
-
-
 });
 
-app.put('/usuario/:id', [verificaToken, verificaAdminRole], function(req, res) {
+app.put('/usuario/:id', function(req, res) {
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
 
@@ -103,7 +84,7 @@ app.put('/usuario/:id', [verificaToken, verificaAdminRole], function(req, res) {
     });
 });
 
-app.delete('/usuario/:id', [verificaToken, verificaAdminRole], function(req, res) {
+app.delete('/usuario/:id', function(req, res) {
     let id = req.params.id;
 
     let cambiaEstado = {
