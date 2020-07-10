@@ -4,7 +4,7 @@ const { verificaToken, verificaAdminRole } = require('../middlewares/autenticaci
 
 let app = express();
 
-let Producto = require('../models/Producto.js')
+let Producto = require('../models/producto.js')
 
 // Mostrar todos los productos
 app.get('/producto', verificaToken, (req, res) => {
