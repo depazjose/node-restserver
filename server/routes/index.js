@@ -6,6 +6,7 @@ app.use(require('./login.js'));
 app.use(require('./categoria.js'));
 app.use(require('./producto.js'));
 app.use(require('./upload.js'));
+app.use(require('./images.js'));
 
 
 

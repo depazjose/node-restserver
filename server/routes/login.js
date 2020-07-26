@@ -20,14 +20,14 @@ app.post('/login', (req, res) => {
         }
 
         if (!usuarioDB) {
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    err: {
-                        message: 'Usuario o contraseña incorrectos.'
-                    }
-                });
-            }
+
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'Usuario o contraseña incorrectos.'
+                }
+            });
+
         }
 
         if (!bcrypt.compareSync(body.password, usuarioDB.password)) {
@@ -131,6 +131,7 @@ app.post('/google', async(req, res) => {
             usuario.img = googleUser.img;
             usuario.google = true;
             usuario.password = "xdx";
+            usuario.role = "ADMIN_ROLE";
 
             usuario.save((err, usuarioDB) => {
                 if (err) {

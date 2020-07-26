@@ -2,6 +2,9 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const app = express();
 const Usuario = require('../models/usuario.js');
+const Producto = require('../models/producto.js');
+const fs = require('fs');
+const path = require('path');
 
 app.use(fileUpload());
 
@@ -55,12 +58,22 @@ app.put('/upload/:tipo/:id', function(req, res) {
             });
         }
 
-        userImage(id, res, fileNameToPersist);
+        switch (tipo) {
+            case 'usuarios':
+                {
+                    userImage(id, res, fileNameToPersist);
+                    break;
+                }
+            case 'productos':
+                {
+                    imagenProducto(id, res, fileNameToPersist);
+                    break;
+                }
 
-        res.json({
-            ok: true,
-            message: 'File uploaded!'
-        });
+        }
+
+
+
     });
 });
 
@@ -68,6 +81,7 @@ function userImage(id, res, nombreArchivo) {
     Usuario.findById(id, (err, userDb) => {
 
         if (err) {
+            borraArchivo('usuarios', nombreArchivo);
             return res.status(500).json({
                 ok: false,
                 err
@@ -75,6 +89,7 @@ function userImage(id, res, nombreArchivo) {
         }
 
         if (!userDb) {
+            borraArchivo('usuarios', nombreArchivo);
             return res.status(400).json({
                 ok: false,
                 err: {
@@ -83,7 +98,10 @@ function userImage(id, res, nombreArchivo) {
             });
         }
 
+        borraArchivo('usuarios', userDb.img);
+
         userDb.img = nombreArchivo;
+
 
         userDb.save((err, userSaved) => {
             res.json({
@@ -96,5 +114,53 @@ function userImage(id, res, nombreArchivo) {
 
     });
 }
+
+function imagenProducto(id, res, nombreArchivo) {
+    Producto.findById(id, (err, productoDb) => {
+
+        if (err) {
+            borraArchivo('productos', nombreArchivo);
+            return res.status(500).json({
+                ok: false,
+                err
+            });
+        }
+
+        if (!productoDb) {
+            borraArchivo('productos', nombreArchivo);
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: 'Product not found'
+                }
+            });
+        }
+
+        borraArchivo('productos', productoDb.img);
+
+        productoDb.img = nombreArchivo;
+
+
+        productoDb.save((err, productSaved) => {
+            res.json({
+                ok: true,
+                producto: productSaved,
+                img: nombreArchivo
+            })
+        });
+
+
+    });
+}
+
+function borraArchivo(tipo, imageToDelete) {
+    let pathImagen = path.resolve(__dirname, `../../uploads/${tipo}/${imageToDelete}`);
+
+    if (fs.existsSync(pathImagen)) {
+        fs.unlinkSync(pathImagen);
+    }
+
+}
+
 
 module.exports = app;
